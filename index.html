@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Peds Anesthesia Drug Calculator</title>
-<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<title>โปรแกรมคำนวณยา สารน้ำ และอุปกรณ์ทางวิสัญญี</title>
+<!-- Google Fonts removed for offline compatibility -->
 <style>
 :root {
   --bg:#fff0f5;--surface:#ffffff;--surface2:#fce4ec;--surface3:#fdf6f9;
@@ -66,8 +66,6 @@ header{background:linear-gradient(135deg,#e91e63 0%,#f06292 50%,#ec407a 100%);pa
 .tnav.active{background:var(--accent2);color:#fff;border-color:var(--accent2);}
 .tnav:hover:not(.active){background:var(--accent-bg);color:var(--accent);}
 /* Neonatal alert banner */
-.neo-alert{background:rgba(255,235,59,0.2);border:1px solid rgba(255,235,59,0.5);border-radius:8px;padding:6px 12px;font-size:11px;color:#fff3cd;margin-bottom:8px;display:none;}
-.neo-alert.show{display:block;}
 
 /* LAYOUT */
 .content{padding:20px;max-width:1200px;margin:0 auto;}
@@ -190,87 +188,27 @@ header{background:linear-gradient(135deg,#e91e63 0%,#f06292 50%,#ec407a 100%);pa
 .main-page{display:block;}
 
 @media print{header{position:static;background:#e91e63!important;-webkit-print-color-adjust:exact;}.calc-btn,.print-btn{display:none;}.section-body{max-height:none!important;}}
-
-html, body {
-  width: 100%;
-  max-width: 100%;
-  overflow-x: hidden;
-}
-body {
-  padding-bottom: env(safe-area-inset-bottom, 0);
-}
-img, table, .table-wrap, .section, .content, .main-page {
-  max-width: 100%;
-}
-.content {
-  overflow-x: hidden;
-}
-.table-wrap {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
-.main-tabs {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
-@media (max-width: 640px) {
-  .content { padding: 10px !important; }
-  .patient-bar { gap: 10px !important; }
-  .input-group input.wide { width: min(100%, 220px) !important; }
-  .fluid-grid {
-    grid-template-columns: 1fr !important;
-  }
-  .fluid-card, .fc-mbl {
-    grid-column: auto !important;
-    min-width: 0 !important;
-  }
-  .ett-grid {
-    grid-template-columns: 1fr 1fr !important;
-  }
-  .inot-grid {
-    grid-template-columns: 1fr !important;
-  }
-  .drug-table {
-    min-width: 720px;
-  }
-}
-
 </style>
-
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#c9b6ff">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Peds Gas">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    navigator.serviceWorker.register('./sw.js');
-  });
-}
-</script>
-
 </head>
 <body>
 <header>
   <div class="header-top">
     <span class="header-icon">🩷</span>
     <div>
-      <div class="header-title">Peds Anesthesia Drug Calculator</div>
-      <div class="header-sub">โปรแกรมคำนวณยาวิสัญญีเด็ก — Pediatric Drug Dose Calculator</div>
+      <div class="header-title">โปรแกรมคำนวณยา สารน้ำ และอุปกรณ์ทางวิสัญญี</div>
+      <div class="header-sub">Anesthesia Drug, Fluid & Equipment Calculator</div>
     </div>
     <button class="print-btn" onclick="window.print()">🖨 พิมพ์</button>
   </div>
   <div class="patient-bar">
     <div class="input-group">
       <label>น้ำหนัก (kg) ⭐</label>
-      <input type="number" id="weight" value="10" min="0.5" max="100" step="0.1" oninput="calculate()">
+      <input type="number" id="weight" placeholder="" min="0.5" max="100" step="0.1" oninput="calculate()">
     </div>
     <div class="age-group">
       <label>อายุ / Age</label>
       <div class="age-row">
-        <input type="number" id="age-val" value="5" min="0" max="999" step="1" oninput="calculate()">
+        <input type="number" id="age-val" placeholder="" min="0" max="999" step="1" oninput="calculate()">
         <div class="age-unit-tabs">
           <button class="age-unit-btn" id="btn-day"   onclick="setAgeUnit('day')">วัน</button>
           <button class="age-unit-btn" id="btn-month" onclick="setAgeUnit('month')">เดือน</button>
@@ -308,7 +246,6 @@ if ('serviceWorker' in navigator) {
 </nav>
 
 <div class="content">
-  <div class="neo-alert" id="neo-alert">⚠️ <strong>ทารกแรกเกิด/เด็กเล็ก:</strong> ตรวจสอบ ETT size และ dose ยาอย่างระมัดระวัง | ข้อมูลอ้างอิง: ราชวิทยาลัยกุมารแพทย์แห่งประเทศไทย</div>
 
   <!-- PAGE 1: ETT -->
   <div class="main-page" id="sec-ett">
@@ -405,19 +342,23 @@ if ('serviceWorker' in navigator) {
       <div class="section-body"><div class="table-wrap"><table class="drug-table" id="tbl-ett-drugs"></table></div></div>
     </div>
   </div>
+  </div>
+
 
 </div>
 
 <script>
+// Capture all errors
+
 const DRUGS={
   induction:[
-    {name:"Propofol",          dose:"2–3 mg/kg",    mn:w=>2*w,   mx:w=>3*w,   conc:10,  unit:"mg",  note:"ลด dose ใน ASA≥3, hypovolemia"},
-    {name:"Thiopental (2.5%)",  dose:"5–7 mg/kg",    mn:w=>5*w,   mx:w=>7*w,   conc:25,  unit:"mg",  note:"ทารก: 5–8 mg/kg | 2.5% = 25 mg/ml"},
-    {name:"Thiopental (1%)",    dose:"5–7 mg/kg",    mn:w=>5*w,   mx:w=>7*w,   conc:10,  unit:"mg",  note:"ทารก: 5–8 mg/kg | 1% = 10 mg/ml"},
-    {name:"Ketamine (IV)",     dose:"1–2 mg/kg",    mn:w=>1*w,   mx:w=>2*w,   conc:10,  unit:"mg",  note:"เพิ่ม secretion; ให้ Atropine ก่อน"},
+    {name:"Propofol",          dose:"1.5–2.5 mg/kg",mn:w=>1.5*w, mx:w=>2.5*w, conc:10,  unit:"mg",  note:"ลด dose ใน ASA≥3, hypovolemia"},
+    {name:"Thiopental (เด็ก) 2.5%", dose:"5–7 mg/kg",    mn:w=>5*w,   mx:w=>7*w,   conc:25,  unit:"mg",  note:"ทารก: 5–8 mg/kg | 2.5% = 25 mg/ml"},
+    {name:"Thiopental (ผู้ใหญ่) 2.5%",dose:"3–5 mg/kg",    mn:w=>3*w,   mx:w=>5*w,   conc:25,  unit:"mg",  note:"ผู้ใหญ่ | 2.5% = 25 mg/ml"},
+    {name:"Thiopental (เด็ก) 1%",dose:"5–7 mg/kg",    mn:w=>5*w,   mx:w=>7*w,   conc:10,  unit:"mg",  note:"ทารก: 5–8 mg/kg | 1% = 10 mg/ml"},
+    {name:"Ketamine (IV)",     dose:"1–2.5 mg/kg",  mn:w=>1*w,   mx:w=>2.5*w, conc:10,  unit:"mg",  note:"เพิ่ม secretion; ให้ Atropine ก่อน"},
     {name:"Ketamine (IM)",     dose:"5–10 mg/kg",   mn:w=>5*w,   mx:w=>10*w,  conc:50,  unit:"mg",  note:""},
-    {name:"Etomidate",         dose:"0.2–0.3 mg/kg",mn:w=>0.2*w, mx:w=>0.3*w, conc:2,   unit:"mg",  note:"Adrenal suppression"},
-    {name:"Dexmedetomidine IN",dose:"1–2 mcg/kg",   mn:w=>1*w,   mx:w=>2*w,   conc:100, unit:"mcg", note:"Intranasal; onset 20 min",cl:"200mcg/2ml"},
+    {name:"Etomidate",         dose:"0.2–0.6 mg/kg",mn:w=>0.2*w, mx:w=>0.6*w, conc:2,   unit:"mg",  note:"Adrenal suppression"},
   ],
   nmba:[
     {name:"Succinylcholine IV (25 mg/ml)", type:"Intubation", dose:"1–2 mg/kg", mn:w=>1*w, mx:w=>2*w, conc:25, unit:"mg", note:"ED95 0.5–0.6 | onset 1.4 min | duration 6.7–7.6 min | 2.5%=25 mg/ml"},
@@ -496,9 +437,7 @@ function setAgeUnit(unit){
   });
   // reset sensible defaults
   const inp=document.getElementById('age-val');
-  if(unit==='day')   inp.value=1;
-  if(unit==='month') inp.value=3;
-  if(unit==='year')  inp.value=5;
+  // no default value
   calculate();
 }
 
@@ -529,60 +468,98 @@ function getAgeDisplay(ageYrs){
 const ff=(v,d=2)=>(isNaN(v)||!isFinite(v))?'–':v.toFixed(d);
 function maint(w){return w<=10?w*4:w<=20?40+(w-10)*2:60+(w-20);}
 function lma(w){
-  if(w<5)    return {size:1,   cuff:4};   // ทารกแรกเกิด – <5 kg
-  if(w<=10)  return {size:1.5, cuff:7};   // 5–10 kg
-  if(w<=20)  return {size:2,   cuff:10};  // 10–20 kg
-  if(w<=30)  return {size:2.5, cuff:14};  // 20–30 kg
-  if(w<=50)  return {size:3,   cuff:20};  // 30–50 kg
-  if(w<=70)  return {size:4,   cuff:30};  // 50–70 kg
-  if(w<=100) return {size:5,   cuff:40};  // 70–100 kg
+  if(w<5)    return {size:1,   cuff:4};   // Neonate <5 kg
+  if(w<=10)  return {size:1.5, cuff:7};   // 5-10 kg
+  if(w<=20)  return {size:2,   cuff:10};  // 10-20 kg
+  if(w<=30)  return {size:2.5, cuff:14};  // 20-30 kg
+  if(w<=50)  return {size:3,   cuff:20};  // 30-50 kg
+  if(w<=70)  return {size:4,   cuff:30};  // 50-70 kg
+  if(w<=100) return {size:5,   cuff:40};  // 70-100 kg
   return             {size:6,   cuff:50}; // >100 kg
 }
 function getW(){return parseFloat(document.getElementById('weight').value)||1;}
 
-// ── ETT for neonates/infants (ราชวิทยาลัยกุมารแพทย์แห่งประเทศไทย)
+// ETT for neonates/infants
 // Returns {uncuffed, cuffed, depthOral, depthNasal, formula, note}
 function ettByAge(ageYrs, w, sex){
   const ageMo = ageYrs*12;
   const ageDays = ageYrs*365;
 
-  // Premature / Newborn ≤ 28 days — ETT size by weight (ตามภาพ)
+  // Premature / Newborn <= 28 days - ETT size by weight
   if(ageDays<=28){
     let unc, depth, note;
-    // ETT size by weight
+    // ETT size by weight (NTL+1)
     if(w<1)      { unc=2.5; note="Preterm <1 kg (GA <28 wks)"; }
     else if(w<=2){ unc=3.0; note="Preterm 1–2 kg (GA 28–34 wks)"; }
     else         { unc=3.5; note="Term >2 kg (GA >34 wks)"; }
-    // ETT depth: NTL+1 by weight
+    // ETT depth NTL+1
     let depthOral;
-    if(w<=0.6)       depthOral=5.5;  // GA 23–24 wks
-    else if(w<=0.8)  depthOral=6.0;  // GA 25–26 wks
-    else if(w<=1.0)  depthOral=6.5;  // GA 27–29 wks
-    else if(w<=1.4)  depthOral=7.0;  // GA 30–32 wks
-    else if(w<=1.8)  depthOral=7.5;  // GA 33–34 wks
-    else if(w<=2.4)  depthOral=8.0;  // GA 35–37 wks
-    else if(w<=3.1)  depthOral=8.5;  // GA 38–40 wks
-    else             depthOral=9.0;  // GA 40–43 wks
+    if(w<=0.6)       depthOral=5.5;  // GA 23-24 wks
+    else if(w<=0.8)  depthOral=6.0;  // GA 25-26 wks
+    else if(w<=1.0)  depthOral=6.5;  // GA 27-29 wks
+    else if(w<=1.4)  depthOral=7.0;  // GA 30-32 wks
+    else if(w<=1.8)  depthOral=7.5;  // GA 33-34 wks
+    else if(w<=2.4)  depthOral=8.0;  // GA 35-37 wks
+    else if(w<=3.1)  depthOral=8.5;  // GA 38-40 wks
+    else             depthOral=9.0;  // GA 40-43 wks
     const depthNote=`NTL+1 = ${depthOral} cm (ทางปาก) | ทางจมูก: ไม่นิยม`;
     return {
       uncuffed: unc, cuffedNote:"ไม่แนะนำในทารกแรกเกิด",
       depthOral, depthNasal:"–",
       formula:"Weight-based (NTL+1)", note, depthNote,
-      suction: Math.round(unc*2), lma: 1, lmaCuff: 4
+      blade: w<1 ? 'Miller 00 (ตรง) — Preterm/ELBW' : 'Miller 0 (ตรง) — Term Newborn',
+      suction: Math.round(unc)*2, lma: 1, lmaCuff: 4
     };
   }
-  // Infant 1–12 months → ใช้ size 3.5, depth = ETT×3
-  if(ageMo<=12){
-    const unc=3.5;
+  // Infant 1–6 months → size 3.5–4.0, depth 10-11 cm
+  if(ageMo<=6){
     return {
-      uncuffed: unc, cuffedNote:"พิจารณาเป็นรายกรณี",
-      depthOral: +(unc*3).toFixed(1), depthNasal: +(unc*3+2).toFixed(1),
-      formula:"Fixed 3.5", note:`Infant ${ageMo.toFixed(0)} เดือน`,
-      depthNote:`ETT×3 = ${(unc*3).toFixed(0)} cm`,
-      suction: Math.round(unc*2), lma: lma(w)
+      uncuffed:"3.5–4.0", uncuffMin:3.5, uncuffMax:4.0,
+      cuffed:"3.0–3.5", cuffMin:3.0, cuffMax:3.5,
+      depthOral:"10–11", depthNasal:"12–13",
+      formula:"ตารางอายุ", note:`Infant ${ageMo.toFixed(0)} เดือน (1–6 เดือน)`,
+      depthNote:"ทารก 1–6 เดือน: ลึก 10–11 cm",
+      blade: 'Miller 0–1 (ตรง)',
+      suction: 8, lma: lma(w).size, lmaCuff: lma(w).cuff
     };
   }
-  // Adult > 14 yr → by sex (ตามภาพ)
+  // Infant 6–12 months → size 4.0–4.5, depth 11-12 cm
+  if(ageMo<=12){
+    return {
+      uncuffed:"4.0–4.5", uncuffMin:4.0, uncuffMax:4.5,
+      cuffed:"3.5–4.0", cuffMin:3.5, cuffMax:4.0,
+      depthOral:"11–12", depthNasal:"13–14",
+      formula:"ตารางอายุ", note:`Infant ${ageMo.toFixed(0)} เดือน (6–12 เดือน)`,
+      depthNote:"ทารก 6–12 เดือน: ลึก 11–12 cm",
+      blade: 'Miller 0–1 (ตรง)',
+      suction: 8, lma: lma(w).size, lmaCuff: lma(w).cuff
+    };
+  }
+  // Child 1-2 yr: 4.5-5.0mm depth 12-13cm
+  if(ageYrs<=2){
+    return {
+      uncuffed:"4.5–5.0", uncuffMin:4.5, uncuffMax:5.0,
+      cuffed:"4.0–4.5", cuffMin:4.0, cuffMax:4.5,
+      depthOral:"12–13", depthNasal:"14–15",
+      formula:"ตารางอายุ", note:`เด็ก ${ageYrs.toFixed(1)} ปี (1–2 ปี)`,
+      depthNote:"เด็ก 1–2 ปี: ลึก 12–13 cm",
+      blade: 'Miller หรือ Mac 1–2',
+      suction: 10, lma: lma(w).size, lmaCuff: lma(w).cuff
+    };
+  }
+  // Child 2-4 yr: 5.0-5.5mm depth 14-15cm
+  if(ageYrs<=4){
+    return {
+      uncuffed:"5.0–5.5", uncuffMin:5.0, uncuffMax:5.5,
+      cuffed:"4.5–5.0", cuffMin:4.5, cuffMax:5.0,
+      depthOral:"14–15", depthNasal:"16–17",
+      formula:"ตารางอายุ", note:`เด็ก ${ageYrs.toFixed(1)} ปี (2–4 ปี)`,
+      depthNote:"เด็ก 2–4 ปี: ลึก 14–15 cm",
+      blade: ageYrs<=3 ? 'Miller หรือ Mac 1–2' : 'Mac 2 (โค้ง)',
+      suction: 10, lma: lma(w).size, lmaCuff: lma(w).cuff
+    };
+  }
+  // Adult > 14 yr by sex
   if(ageYrs>14){
     const isFemale = (sex==='female');
     return {
@@ -594,16 +571,17 @@ function ettByAge(ageYrs, w, sex){
       depthNasal:  isFemale ? '21–23' : '23–25',
       formula:     isFemale ? 'Female (♀)' : 'Male (♂)',
       note:        isFemale ? 'หญิง: No.7.0–7.5 ลึก 18–20 cm' : 'ชาย: No.7.5–8.0 ลึก 20–22 cm',
+      blade:       'Mac 3 (โค้ง)',
       suction:     isFemale ? 14 : 16,
       lma:         lma(w).size,
       lmaCuff:     lma(w).cuff
     };
   }
-  // Child ≥1 yr → Size = 4 + Age/4, Depth = ETT×3
+  // Child ≥1 yr → Size = 4 + Age/4, Depth = Age/2+12
   const ageYrRounded = ageYrs;
   const ettSize = +(4 + ageYrRounded/4).toFixed(1);
   const ettCuff = +(3.5 + ageYrRounded/4).toFixed(1);
-  const depthOral = +(ettSize*3).toFixed(1);
+  const depthOral = +(ageYrRounded/2 + 12).toFixed(1);
   return {
     uncuffed:   ettSize,
     cuffed:     ettCuff,
@@ -612,9 +590,12 @@ function ettByAge(ageYrs, w, sex){
     depthOral:  depthOral,
     depthNasal: +(depthOral+3).toFixed(1),
     depthOralRange:`${+(depthOral-1).toFixed(1)} – ${+(depthOral+1).toFixed(1)}`,
-    depthNote:  `ETT×3 = ${depthOral} cm`,
-    formula:"4 + Age/4 | ETT×3",
-    suction: Math.round(ettSize*2),
+    depthNote:  `อายุ/2+12 = ${depthOral} cm`,
+    formula:"4 + Age/4 | อายุ/2+12",
+    blade: ageYrRounded<=3 ? 'Miller หรือ Mac 1–2' :
+           ageYrRounded<=6 ? 'Mac 2 (โค้ง)' :
+           ageYrRounded<=10 ? 'Mac 2–3 (โค้ง)' : 'Mac 3 (โค้ง)',
+    suction: Math.round(ettSize)*2,
     lma: lma(w).size, lmaCuff: lma(w).cuff
   };
 }
@@ -626,7 +607,6 @@ function renderETT(w, ageYrs){
   const isInfant=ageYrs<=1&&!isNeonate;
 
   // show/hide neo alert
-  document.getElementById('neo-alert').classList.toggle('show', ageYrs<1);
   document.getElementById('age-display').textContent = getAgeDisplay(ageYrs);
 
   let items;
@@ -637,15 +617,17 @@ function renderETT(w, ageYrs){
       {label:"ETT Cuffed (ID)",    formula:e.formula,       val:e.cuffed,    range:'–',  unit:"mm",  note:e.note, noteColor:sexColor},
       {label:"ความลึกทางปาก",     formula:"Standard",      val:e.depthOral, range:'–',  unit:"cm",  note:''},
       {label:"ความลึกทางจมูก",    formula:"+3 cm",         val:e.depthNasal,range:'–',  unit:"cm",  note:''},
+      {label:"Laryngoscope Blade", formula:"Macintosh",    val:e.blade||'Mac 3 (โค้ง)', range:'–', unit:'', note:''},
       {label:"LMA Size",            formula:"Adult",         val:e.lma,       range:'–',  unit:"size", note:e.lmaCuff?`Cuff vol: ${e.lmaCuff} ml`:''},
       {label:"Suction Catheter",    formula:"Fr",            val:e.suction,   range:'–',  unit:"Fr",  note:''},
     ];
   } else if(isNeonate||isInfant){
     items=[
       {label:"ETT Uncuffed (ID)",  formula:e.formula,     val:e.uncuffed,   range:e.uncuffRange||'–', unit:"mm", note:e.note||''},
-      {label:"ETT Cuffed",         formula:"–",           val:e.cuffedNote, range:'–',                unit:'',   note:''},
+      {label:"ETT Cuffed (ID)",    formula:"Uncuffed−0.5",val:e.cuffed||e.cuffedNote||"พิจารณาเป็นรายกรณี", range:e.cuffed?(e.cuffMin+'–'+e.cuffMax):'–', unit:e.cuffed?"mm":"", note:""},
       {label:"ความลึกทางปาก",     formula:"ETT×3",       val:e.depthOral,  range:'–',                unit:"cm", depthNote:e.depthNote||''},
       {label:"ความลึกทางจมูก",    formula:"+2 cm",       val:e.depthNasal, range:'–',                unit:"cm", note:''},
+      {label:"Laryngoscope Blade", formula:"Miller",      val:e.blade||'Miller 1 (ตรง)', range:'–', unit:'', note:''},
       {label:"LMA Size",            formula:"Weight-based",val:e.lma,        range:'–',                unit:"size",note:e.lmaCuff?`Cuff vol: ${e.lmaCuff} ml`:''},
       {label:"Suction Catheter",    formula:"ETT×2",       val:e.suction,    range:'–',                unit:"Fr", note:''},
     ];
@@ -654,7 +636,8 @@ function renderETT(w, ageYrs){
       {label:"ETT Uncuffed (ID)",  formula:"4 + Age/4",  val:e.uncuffed,   range:e.uncuffRange, unit:"mm"},
       {label:"ETT Cuffed (ID)",    formula:"3.5 + Age/4",val:e.cuffed,     range:e.cuffRange,   unit:"mm"},
       {label:"ความลึกทางปาก",     formula:"ETT×3",      val:e.depthOral,  range:e.depthOralRange,unit:"cm", depthNote:e.depthNote||''},
-      {label:"ความลึกทางจมูก",    formula:"+3 cm",      val:e.depthNasal, range:`${+(e.depthOral+2).toFixed(1)} – ${+(e.depthOral+4).toFixed(1)}`,unit:"cm"},
+      {label:"ความลึกทางจมูก",    formula:"+3 cm",      val:e.depthNasal, range:(typeof e.depthOral==="number")?`${+(e.depthOral+2).toFixed(1)} – ${+(e.depthOral+4).toFixed(1)}`:"–",unit:"cm"},
+      {label:"Laryngoscope Blade", formula:"Macintosh",  val:e.blade||'Mac 2 (โค้ง)', range:'–', unit:'', note:''},
       {label:"LMA Size",            formula:"Weight-based",val:e.lma,      range:'–',           unit:"size", note:e.lmaCuff?`Cuff vol: ${e.lmaCuff} ml`:''},
       {label:"Suction Catheter",    formula:"ETT × 2",   val:e.suction,   range:'–',            unit:"Fr"},
     ];
@@ -717,7 +700,7 @@ function renderDrugTable(id,drugs,w){
 function getEBV(w, ageYrs){
   const ageDays=ageYrs*365;
   const ageMo=ageYrs*12;
-  // Blood volume ตามภาพ
+  // Blood volume by age
   if(ageDays<28 && w<2.5) return {ebv:w*95,  label:'Preterm newborn 95 ml/kg (90–100)'};
   if(ageDays<=28)          return {ebv:w*90,  label:'Term newborn 90 ml/kg'};
   if(ageMo<3)              return {ebv:w*85,  label:'Infant <3 mo 85 ml/kg (80–90)'};
@@ -734,7 +717,7 @@ function renderFluid(w,ageYrs){
   const npoHr=parseInt(document.getElementById('npo-hr')?.value)||8;
   const m=maint(w),npo=m*npoHr,hr1=npo*0.5+m,hr23=npo*0.25+m;
   const {ebv,label:ebvN}=getEBV(w,ageYrs);
-  const hctI=parseFloat(document.getElementById('hct-init')?.value)||35;
+  const hctI=parseFloat((document.getElementById('hct-init')?.value||'').replace(/[^0-9.]/g,''))||0;
   const hctA=parseFloat(document.getElementById('hct-allow')?.value)||27;
   const mabl = hctI>0 ? ebv*(hctI-hctA)/hctI : 0;
   const mablSafe = mabl>0?mabl:0;
@@ -745,7 +728,7 @@ function renderFluid(w,ageYrs){
     npoSlider.id='npo-slider-wrap';
     npoSlider.style.cssText='display:flex;align-items:center;gap:12px;padding:10px 16px 4px;flex-wrap:wrap;';
     npoSlider.innerHTML=`<span style="font-size:13px;font-weight:700;color:var(--text2);">⏱ NPO time:</span>`+
-      [2,3,4,5,6,7,8].map(h=>`<button onclick="document.getElementById('npo-hr').value=${h};renderFluid(${w},${ageYrs})" `+
+      [2,3,4,5,6,7,8].map(h=>`<button onclick="document.getElementById('npo-hr').value=${h};renderFluidFromDOM()" `+
         `style="padding:5px 12px;border-radius:16px;font-size:12px;font-weight:700;cursor:pointer;border:2px solid var(--border2);`+
         `background:${h===(npoHr)?'var(--accent2)':'var(--surface)'};color:${h===(npoHr)?'#fff':'var(--text2)'};font-family:'Sarabun',sans-serif">${h} hr</button>`).join('')+
       `<input type="hidden" id="npo-hr" value="${npoHr}">`;
@@ -779,9 +762,9 @@ function renderFluid(w,ageYrs){
 
         <div style="display:flex;flex-direction:column;gap:4px">
           <div style="font-size:10px;color:var(--red);font-weight:700">Hct ผู้ป่วย (%)</div>
-          <input id="hct-init" type="number" value="${hctI}" min="1" max="70" step="1"
+          <input id="hct-init" type="text" inputmode="numeric" pattern="[0-9]*" value="${hctI||''}" placeholder="" maxlength="2"
             style="width:72px;padding:5px 8px;border:2px solid #f48fb1;border-radius:8px;font-size:20px;font-weight:700;color:var(--red);background:#fff8f8;text-align:center;outline:none;font-family:'IBM Plex Mono',monospace"
-            oninput="renderFluid(${w},${ageYrs})">
+            oninput="if(this.value.replace(/[^0-9]/g,'').length>=2){renderFluidFromDOM()}" onblur="renderFluidFromDOM()">
         </div>
 
         <div style="font-size:22px;color:var(--text3);padding-bottom:6px">−</div>
@@ -789,14 +772,14 @@ function renderFluid(w,ageYrs){
         <div style="display:flex;flex-direction:column;gap:4px">
           <div style="font-size:10px;color:var(--red);font-weight:700">Hct ต่ำสุดที่ยอมรับ (%)</div>
           <div style="display:flex;gap:5px;margin-bottom:4px">
-            <button onclick="setHctAllow(27,${w},${ageYrs})"
+            <button onclick="setHctAllow(27,getW(),getAgeYears())"
               style="padding:4px 12px;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer;border:2px solid #f48fb1;background:${hctA===27?'#e91e63':'#fff8f8'};color:${hctA===27?'#fff':'var(--red)'};font-family:'Sarabun',sans-serif">27</button>
-            <button onclick="setHctAllow(30,${w},${ageYrs})"
+            <button onclick="setHctAllow(30,getW(),getAgeYears())"
               style="padding:4px 12px;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer;border:2px solid #f48fb1;background:${hctA===30?'#e91e63':'#fff8f8'};color:${hctA===30?'#fff':'var(--red)'};font-family:'Sarabun',sans-serif">30</button>
           </div>
           <input id="hct-allow" type="number" value="${hctA}" min="1" max="60" step="1"
             style="width:72px;padding:5px 8px;border:2px solid #f48fb1;border-radius:8px;font-size:20px;font-weight:700;color:var(--red);background:#fff8f8;text-align:center;outline:none;font-family:'IBM Plex Mono',monospace"
-            oninput="renderFluid(${w},${ageYrs})">
+            oninput="renderFluidFromDOM()">
         </div>
 
         <div style="font-size:22px;color:var(--text3);padding-bottom:6px">÷ ${hctI}</div>
@@ -814,44 +797,54 @@ function renderFluid(w,ageYrs){
 }
 
 function renderInotrope(w){
-  document.getElementById('inot-grid').innerHTML=INOTROPES.map((drug,di)=>{
-    if(!(drug.name in inotConc)) inotConc[drug.name]=drug.defaultConc;
-    const conc=inotConc[drug.name];
-    const optsHtml=drug.opts.map(o=>
-      `<span class="inot-opt${o.v===conc?' selected':''}" onclick="setConc('${drug.name}',${o.v},${di})">${o.l}</span>`
-    ).join('');
-    const rows=drug.doses.map(dose=>{
-      const mlhr=dose*w*0.06*conc;
-      let cls='dose-start';
-      if(dose>=drug.warn)cls='dose-max';
-      else if(dose>=drug.warn*0.6)cls='dose-high';
-      else if(dose>drug.doses[0])cls='dose-mid';
-      const ds=dose%1===0?dose:(dose<0.1?dose.toFixed(3):dose);
-      return`<tr><td class="inot-dose">${ds}</td><td><span class="inot-result ${cls}">${mlhr.toFixed(2)}</span></td><td style="font-size:10px;color:var(--text3)">ml/hr</td></tr>`;
-    }).join('');
-    return`<div class="inot-card">
-      <div class="inot-card-header" style="background:${drug.color}">
-        <span>${drug.name}</span><span style="font-size:11px;opacity:0.8;font-weight:400">${drug.unit}</span>
-      </div>
-      <div class="inot-card-body">
-        <div class="inot-conc-row">
-          <span class="inot-conc-label">Conc:</span>
-          <input class="inot-conc-input" id="conc-${di}" type="number" value="${conc}" step="0.1" min="0.01"
-            oninput="setConcInput('${drug.name}',this.value,${di})">
-          <div class="inot-conc-opts">${optsHtml}</div>
-        </div>
-        <table class="inot-table">
-          <tr><th>Dose (${drug.unit})</th><th>ml/hr</th><th></th></tr>${rows}
-        </table>
-        <div class="inot-note">${drug.note}</div>
-      </div>
-    </div>`;
-  }).join('');
+  var grid = document.getElementById('inot-grid');
+  if(!grid) return;
+  var html2 = '';
+  INOTROPES.forEach(function(drug, di){
+    if(!(drug.name in inotConc)) inotConc[drug.name] = drug.defaultConc;
+    var conc = inotConc[drug.name];
+    var optsHtml = '';
+    drug.opts.forEach(function(o){
+      var sel = (o.v === conc) ? ' selected' : '';
+      optsHtml += '<span class="inot-opt'+sel+'" onclick="setConc(this)" data-name="'+drug.name+'" data-v="'+o.v+'" data-di="'+di+'">'+o.l+'</span>';
+    });
+    var rows = '';
+    drug.doses.forEach(function(dose){
+      var mlhr = dose * w * 0.06 * conc;
+      var cls = dose >= drug.warn ? 'inot-row warn' : (dose === drug.doses[0] ? 'inot-row start' : 'inot-row');
+      rows += '<tr class="'+cls+'"><td class="inot-dose">'+dose+'</td><td class="inot-unit">'+drug.unit+'</td><td class="inot-result">'+mlhr.toFixed(2)+'</td><td class="inot-unit">ml/hr</td></tr>';
+    });
+    var warnHtml = drug.warn ? '<div class="inot-warn">\u26a0 warn \u2265'+drug.warn+' '+drug.unit+'</div>' : '';
+    var noteHtml = drug.note ? '<div class="inot-note">'+drug.note+'</div>' : '';
+    html2 += '<div class="inot-card">'
+      + '<div class="inot-name">'+drug.name+'</div>'
+      + '<div class="inot-conc-row">'
+      + '<span class="inot-conc-label">Conc:</span>'
+      + '<input class="inot-conc-input" id="conc-'+di+'" type="number" value="'+conc+'" step="0.1" min="0.01"'
+      + ' data-name="'+drug.name+'" data-di="'+di+'"'
+      + ' oninput="setConcInput(this.dataset.name,this.value,parseInt(this.dataset.di))">'
+      + '<div class="inot-conc-opts">'+optsHtml+'</div>'
+      + '</div>'
+      + '<table class="inot-table"><thead><tr><th>Dose</th><th>Unit</th><th>Rate</th><th></th></tr></thead>'
+      + '<tbody>'+rows+'</tbody></table>'
+      + warnHtml + noteHtml
+      + '</div>';
+  });
+  grid.innerHTML = html2;
 }
 
-function setConc(name,val,di){
-  inotConc[name]=val;
-  document.getElementById(`conc-${di}`).value=val;
+function setConc(nameOrEl, val, di){
+  var name, v, idx;
+  if(typeof nameOrEl === 'object'){
+    name = nameOrEl.dataset.name;
+    v = parseFloat(nameOrEl.dataset.v);
+    idx = parseInt(nameOrEl.dataset.di);
+  } else {
+    name = nameOrEl; v = val; idx = di;
+  }
+  inotConc[name] = v;
+  var el = document.getElementById('conc-' + idx);
+  if(el) el.value = v;
   renderInotrope(getW());
 }
 function setConcInput(name,val,di){
@@ -877,9 +870,21 @@ function setHctAllow(val,w,ageYrs){
 }
 
 function calculate(){
+  const wRaw = document.getElementById('weight').value;
+  const ageRaw = document.getElementById('age-val').value;
+  // if weight or age empty, clear results
+  if(wRaw===''||ageRaw===''){
+    document.getElementById('ett-grid').innerHTML='<div style="color:#bbb;padding:16px;font-size:14px;">กรุณากรอกน้ำหนักและอายุก่อนคำนวณ</div>';
+    ['tbl-induction','tbl-nmba','tbl-opioid','tbl-reversal','tbl-local','tbl-ett-drugs'].forEach(id=>{
+      const el=document.getElementById(id); if(el) el.innerHTML='';
+    });
+    document.getElementById('fluid-output') && (document.getElementById('fluid-output').innerHTML='');
+    document.getElementById('inotrope-output') && (document.getElementById('inotrope-output').innerHTML='');
+    return;
+  }
   const w=getW(), ageYrs=getAgeYears();
   renderETT(w,ageYrs);
-  Object.keys(DRUGS).forEach(k=>renderDrugTable(`tbl-${k}`,DRUGS[k],w));
+  Object.keys(DRUGS).forEach(k=>{ const id=k.replace(/[^a-z-]/g,''); renderDrugTable('tbl-'+id,DRUGS[k],w); });
   renderFluid(w,ageYrs);
   renderInotrope(w);
   document.querySelectorAll('.ett-card-value,.fluid-card-value,.inot-result').forEach(el=>{
@@ -892,7 +897,7 @@ function scrollTo2(id, btn){
   if(btn) btn.classList.add('active');
   const el=document.getElementById(id);
   if(!el) return;
-  // expand section ถ้า collapsed อยู่
+  // expand section if collapsed
   const body=el.querySelector('.section-body');
   const tog=el.querySelector('.section-toggle');
   if(body&&body.classList.contains('collapsed')){
@@ -900,7 +905,7 @@ function scrollTo2(id, btn){
     body.style.maxHeight='9999px';
     if(tog) tog.textContent='▲';
   }
-  // scroll หลัง expand
+  // scroll after expand
   setTimeout(()=>{
     const navH=document.querySelector('.main-tabs')?.offsetHeight||48;
     const headerH=document.querySelector('header')?.offsetHeight||102;
@@ -921,10 +926,23 @@ function toggleSec(hdr){
   tog.textContent=body.classList.contains('collapsed')?'▼':'▲';
 }
 
+
+
+function renderFluidFromDOM(){
+  const w=getW(), ageYrs=getAgeYears();
+  if(w>0) renderFluid(w,ageYrs);
+}
+
+
 document.addEventListener('DOMContentLoaded',()=>{
   document.querySelectorAll('.section-body').forEach(el=>el.style.maxHeight='9999px');
+  // wait for user input before calculating
   calculate();
 });
 </script>
+
+  <div style="text-align:center;padding:12px 0 8px;font-size:11pt;color:#aaa;font-family:'Sarabun',sans-serif;border-top:1px solid #f0d0e0;margin-top:8px;">
+    Developed by <strong style="color:#c2185b">Kusuma Tuwanhayee</strong> &nbsp;|&nbsp; Nurse Anesthetist, Yala Hospital
+  </div>
 </body>
 </html>
